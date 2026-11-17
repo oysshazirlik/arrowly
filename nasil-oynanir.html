@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#16352a">
+<title>Arrowly · Nasıl oynanır?</title>
+<meta name="description" content="Arrowly nasıl oynanır? Oku sürükle, engeli önce çek, ödülleri topla, 3 yıldızı yakala. Kaydırarak öğren.">
+<style>
+@font-face { font-family: "Lilita"; src: url("LilitaOne-Regular.ttf"); font-display: swap; }
+:root { --zemin: #16352a; --yuzey: #1f4a3b; --yazi: #f4f1e6; --soluk: #b9cbbf; --vurgu: #ffc84a; --mavi: #5cc8ff; }
+* { box-sizing: border-box; }
+html { background: var(--zemin); }
+body { margin: 0; color: var(--yazi); font: 18px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; background: radial-gradient(ellipse at 15% 0%, #21523f 0%, var(--zemin) 55%); }
+h1, h2, .rozet { font-family: "Lilita", system-ui, sans-serif; font-weight: 400; }
+.ust { position: fixed; z-index: 10; inset: 0 0 auto 0; display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: linear-gradient(#16352aee, #16352a00); }
+.ust b { font-family: "Lilita"; font-size: 24px; font-weight: 400; display: flex; align-items: center; gap: 10px; }
+.ust img { width: 34px; height: 34px; border-radius: 9px; }
+.ust a { color: var(--soluk); font-size: 14px; text-decoration: none; }
+
+.giris { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 90px 24px 40px; }
+.giris h1 { font-size: clamp(46px, 9vw, 120px); line-height: 0.95; margin: 0 0 16px; }
+.giris h1 em { font-style: normal; color: var(--vurgu); }
+.giris p { color: var(--soluk); max-width: 34ch; margin: 0 auto 28px; font-size: clamp(18px, 2.4vw, 22px); }
+.ok { font-size: 36px; animation: sal 1.6s ease-in-out infinite; color: var(--vurgu); }
+@keyframes sal { 50% { transform: translateY(10px); } }
+
+.adimlar { position: relative; height: 760vh; } /* 6 adım x ~120vh */
+.yapisik { position: sticky; top: 0; height: 100vh; display: grid; grid-template-columns: 1fr auto 1fr; gap: 44px; align-items: center; padding: 0 28px; }
+.metin { max-width: 24ch; font-size: 20px; justify-self: end; text-align: right; }
+.metin .no { font-family: "Lilita"; color: var(--soluk); font-size: 20px; letter-spacing: 0.08em; }
+.metin h2 { font-size: clamp(42px, 5.6vw, 84px); line-height: 0.98; margin: 6px 0 14px; color: var(--vurgu); text-transform: uppercase; }
+.metin p { margin: 0; color: var(--soluk); }
+.metin > * { transition: opacity 0.3s, transform 0.3s; }
+.metin.degis > * { opacity: 0; transform: translateY(14px); }
+.noktalar { justify-self: start; display: flex; flex-direction: column; gap: 14px; }
+.noktalar i { width: 12px; height: 12px; border-radius: 50%; background: #ffffff33; transition: 0.3s; }
+.noktalar i.acik { background: var(--vurgu); transform: scale(1.5); }
+.telefon { height: min(94vh, 1100px); width: auto; max-width: 92vw; aspect-ratio: 9 / 16; border-radius: 36px; overflow: hidden; border: 8px solid #0c1f18; box-shadow: 0 30px 80px #000a, 0 0 0 2px #2c6a54; background: #0e1f18; position: relative; }
+.telefon canvas { width: 100%; height: 100%; display: block; }
+
+.son { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 80px 24px; }
+.son h2 { font-size: clamp(44px, 8vw, 100px); line-height: 1; margin: 0 0 14px; }
+.son p { color: var(--soluk); max-width: 34ch; margin: 0 auto 26px; }
+.rozet { display: inline-block; padding: 14px 26px; border-radius: 16px; background: var(--vurgu); color: #2b2100; font-size: 22px; }
+footer { padding: 24px; text-align: center; color: var(--soluk); font-size: 14px; }
+footer a { color: var(--yazi); }
+
+@media (max-width: 860px) {
+  .yapisik { grid-template-columns: 1fr; grid-template-rows: auto 1fr; align-content: start; padding: 66px 16px 0; gap: 8px; justify-items: center; }
+  .metin { justify-self: center; text-align: center; max-width: 30ch; min-height: 150px; }
+  .metin h2 { font-size: clamp(32px, 9vw, 46px); margin: 2px 0 6px; }
+  .metin p { font-size: 16px; }
+  .noktalar { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); gap: 10px; }
+  .noktalar i { width: 9px; height: 9px; }
+  .telefon { height: calc(100vh - 215px); max-width: 94vw; border-width: 6px; border-radius: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { .ok { animation: none; } .metin > * { transition: none; } }
+</style>
+</head>
+<body>
+<div class="ust"><b><img src="simge.png" alt="">Arrowly</b></div>
+
+<section class="giris">
+  <div>
+    <h1>Nasıl<br><em>oynanır?</em></h1>
+    <p>Temelden ileri seviyeye on adım. Kaydır, oyun senin için oynasın.</p>
+    <div class="ok">↓</div>
+  </div>
+</section>
+
+<section class="adimlar" id="adimlar" aria-label="Arrowly nasıl oynanır">
+  <div class="yapisik">
+    <div class="metin" id="metin">
+      <div class="no" id="no"></div>
+      <h2 id="baslik"></h2>
+      <p id="aciklama"></p>
+    </div>
+    <div class="telefon"><canvas id="tuval" aria-label="Oyun animasyonu"></canvas></div>
+    <div class="noktalar" id="noktalar"></div>
+  </div>
+</section>
+
+<section class="son">
+  <div>
+    <h2>Hazırsın.</h2>
+    <p>Reklamsız, üyeliksiz. Rahat modda süresiz, süreli modda yarışarak oyna.</p>
+    <span class="rozet">Yakında</span>
+  </div>
+</section>
+<footer>Arrowly · <a href="mailto:arrowly.destek@gmail.com">arrowly.destek@gmail.com</a> · <a href="gizlilik.html">Gizlilik</a></footer>
+
+<script>
+// Oyunun gerçek görünümünü (renkler, yol, ok, kapı, ödül) taklit eden küçük bir çizici; her adım kaydırmayla 0..1 ilerler.
+const W = 7, H = 12;               // hücre sayısı
+const cv = document.getElementById("tuval");
+const c = cv.getContext("2d");
+let hucre = 40, ox = 0, oy = 0, G = 360, Y = 640;
+
+const RENK = { zemin: "#0e1f18", yol: "#43564e", yolKenar: "#13251d", seri: "#ffffff40", sari: "#ffc84a", mavi: "#5cc8ff", yazi: "#f4f1e6", soluk: "#b9cbbf" };
+
+// ---- yardımcılar: yol (nokta dizisi) üzerinde uzaklık
+const uzun = (P) => { const L = [0]; for (let i = 1; i < P.length; i++) L[i] = L[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); return L; };
+function nokta(P, L, d) {
+  d = Math.max(0, Math.min(d, L[L.length - 1]));
+  for (let i = 1; i < P.length; i++) if (d <= L[i]) { const t = (d - L[i - 1]) / (L[i] - L[i - 1] || 1); return [P[i - 1][0] + (P[i][0] - P[i - 1][0]) * t, P[i - 1][1] + (P[i][1] - P[i - 1][1]) * t]; }
+  return P[P.length - 1];
+}
+function govde(P, L, bas, boy) { // başın bulunduğu uzaklıktan geriye boy kadar
+  const pts = []; const n = 14;
+  for (let i = 0; i <= n; i++) pts.push(nokta(P, L, bas - boy * (i / n)));
+  // köşeleri koru: aradaki köşe noktalarını da ekle
+  const ara = [];
+  for (let i = 0; i < P.length; i++) if (L[i] > bas - boy && L[i] < bas) ara.push([L[i], P[i]]);
+  const hepsi = pts.map((p, i) => [bas - boy * (i / n), p]).concat(ara).sort((a, b) => b[0] - a[0]);
+  return hepsi.map((x) => x[1]);
+}
+const px = (p) => [ox + p[0] * hucre, oy + p[1] * hucre];
+
+function yolCiz(yollar) {
+  c.lineCap = "round"; c.lineJoin = "round";
+  for (const P of yollar) { c.beginPath(); P.forEach((p, i) => { const [x, y] = px(p); i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.strokeStyle = RENK.yolKenar; c.lineWidth = hucre * 1.0; c.stroke(); }
+  for (const P of yollar) { c.beginPath(); P.forEach((p, i) => { const [x, y] = px(p); i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.strokeStyle = RENK.yol; c.lineWidth = hucre * 0.86; c.stroke(); }
+  c.setLineDash([hucre * 0.28, hucre * 0.22]);
+  for (const P of yollar) { c.beginPath(); P.forEach((p, i) => { const [x, y] = px(p); i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.strokeStyle = RENK.seri; c.lineWidth = 2; c.stroke(); }
+  c.setLineDash([]);
+}
+function okCiz(pts, renk, basParla) {
+  if (pts.length < 2) return;
+  c.lineCap = "round"; c.lineJoin = "round";
+  const bas = pts[0], gri = pts[1];
+  const a = Math.atan2(bas[1] - gri[1], bas[0] - gri[0]);
+  c.beginPath(); pts.forEach((p, i) => { const [x, y] = px(p); i ? c.lineTo(x, y) : c.moveTo(x, y); });
+  c.strokeStyle = renk; c.lineWidth = hucre * 0.5; c.stroke();
+  const [hx, hy] = px(bas); const s = hucre * 0.62;
+  c.save(); c.translate(hx, hy); c.rotate(a); c.beginPath(); c.moveTo(s * 0.9, 0); c.lineTo(-s * 0.1, -s * 0.62); c.lineTo(-s * 0.1, s * 0.62); c.closePath(); c.fillStyle = renk; c.fill(); c.restore();
+  const [tx, ty] = px(pts[pts.length - 1]); c.beginPath(); c.arc(tx, ty, hucre * 0.11, 0, 7); c.strokeStyle = "#8a6a14"; c.lineWidth = 3; c.stroke();
+}
+function kapiCiz(p, renk, yon, acik) {
+  const [x, y] = px(p); const s = hucre * 0.9;
+  c.save(); c.translate(x, y);
+  c.fillStyle = renk; c.globalAlpha = acik ? 1 : 0.9; c.beginPath(); c.roundRect(-s / 2, -s / 2, s, s, hucre * 0.2); c.fill();
+  c.fillStyle = "#7a5a10"; c.rotate(yon); c.beginPath(); c.moveTo(s * 0.22, 0); c.lineTo(-s * 0.12, -s * 0.26); c.lineTo(-s * 0.12, s * 0.26); c.closePath(); c.fill();
+  c.restore();
+  if (acik) { c.fillStyle = "#3ecf8e"; c.beginPath(); c.arc(x + s * 0.5, y - s * 0.5, hucre * 0.3, 0, 7); c.fill(); c.fillStyle = "#fff"; c.font = "800 " + hucre * 0.42 + "px system-ui"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("✓", x + s * 0.5, y - s * 0.5 + 1); }
+}
+function emoji(ch, p, boy = 0.6, a = 1) { const [x, y] = px(p); c.globalAlpha = a; c.font = hucre * boy + "px system-ui"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(ch, x, y); c.globalAlpha = 1; }
+function parmak(p, bas) { const [x, y] = px(p); const sal = Math.sin(performance.now() / 260) * 4; c.font = hucre * 0.9 + "px system-ui"; c.textAlign = "center"; c.textBaseline = "middle"; c.globalAlpha = bas; c.fillText("👆", x + 8, y + hucre * 0.7 + sal); c.globalAlpha = 1; }
+function ust(altin, yildiz, hamle, ek) {
+  c.fillStyle = "#16352a"; c.fillRect(0, 0, G, oy - 6 > 40 ? 52 : 52);
+  c.fillStyle = RENK.yazi; c.font = "700 15px system-ui"; c.textAlign = "left"; c.textBaseline = "middle";
+  c.fillText("Seviye 1", 14, 26); c.textAlign = "center"; c.fillText("🪙 " + altin, G / 2, 26);
+  c.textAlign = "right"; c.fillText(ek || ("★ " + yildiz), G - 14, 26);
+  if (hamle !== null) { c.fillStyle = RENK.soluk; c.font = "600 13px system-ui"; c.textAlign = "center"; c.fillText("Hamle: " + hamle + "  ·  ★★★ 13", G / 2, 56); }
+}
+
+// ---- sahneler: p = 0..1
+const A = [[1, 9], [1, 6], [5, 6], [5, 2]];      // ana yol
+const LA = uzun(A);
+const kapiA = [5, 1.1];
+const oduller = [[1, 7.4, "🌸"], [2.8, 6, "🍬"], [4.2, 6, "🌸"], [5, 4.4, "🍬"], [5, 3.2, "🌸"]];
+
+function sahneKur(w, h) {
+  G = w; Y = h; hucre = Math.max(12, Math.min(w / (W + 0.6), (h - 120) / (H - 1))); ox = (w - hucre * (W - 1)) / 2 - hucre * 0.0 + hucre * 0; oy = 80;
+}
+function temel(yollar) { c.fillStyle = RENK.zemin; c.fillRect(0, 0, G, Y); yolCiz(yollar); }
+const e = (p) => p * p * (3 - 2 * p); // yumuşatma
+
+const SAHNELER = [
+  { // 1 SÜRÜKLE
+    no: "1 / 6", baslik: "Sürükle!", aciklama: "Oku parmağınla tut ve yolda kendi renginde kapıya götür.",
+    ciz(p) {
+      temel([A]); kapiCiz(kapiA, RENK.sari, -Math.PI / 2, p > 0.97);
+      const d = 2.2 + e(Math.min(1, p / 0.95)) * (LA[3] - 2.2 + 0.2);
+      const g = govde(A, LA, d, 2.2); okCiz(g, RENK.sari);
+      if (p < 0.95) parmak(nokta(A, LA, d), 1);
+      ust(0, 0, Math.round(p * 14), null);
+    },
+  },
+  { // 2 ENGEL
+    no: "2 / 6", baslik: "Önce onu çek!", aciklama: "Yolu başka ok kapatıyorsa önce onu kenara al, sonra geç.",
+    ciz(p) {
+      const Q = [[4.6, 6], [3, 6], [3, 3.2]], LQ = uzun(Q);
+      temel([A, [[3, 6], [3, 3.2]]]); kapiCiz(kapiA, RENK.sari, -Math.PI / 2, p > 0.98);
+      const pB = Math.min(1, p / 0.45), pY = Math.max(0, (p - 0.5) / 0.5);
+      const dB = 1.6 + e(pB) * (LQ[2] - 1.6); okCiz(govde(Q, LQ, dB, 1.6), RENK.mavi);
+      if (p < 0.45) parmak(nokta(Q, LQ, dB), 1);
+      const dY0 = 2.2, dY1 = LA[3] + 0.2; const dY = p < 0.5 ? dY0 + Math.min(1, p / 0.2) * 1.9 : dY0 + 1.9 + e(pY) * (dY1 - dY0 - 1.9);
+      okCiz(govde(A, LA, dY, 2.2), RENK.sari);
+      if (p >= 0.5 && p < 0.97) parmak(nokta(A, LA, dY), 0.9);
+      c.fillStyle = RENK.soluk; c.font = "700 14px system-ui"; c.textAlign = "center";
+      if (p < 0.2) c.fillText("Yolun önünde mavi ok var", G / 2, Y - 26);
+      ust(0, 0, Math.round(p * 7), null);
+    },
+  },
+  { // 3 ÖDÜL
+    no: "3 / 6", baslik: "Ödülü kap!", aciklama: "Yoldan geçerken ödülleri topla. Her biri altın kazandırır.",
+    ciz(p) {
+      temel([A]); kapiCiz(kapiA, RENK.sari, -Math.PI / 2, p > 0.97);
+      const d = 2.2 + e(Math.min(1, p / 0.95)) * (LA[3] - 2.2 + 0.2);
+      let altin = 0;
+      for (const [x, y, ch] of oduller) {
+        // ödülün yol üzerindeki uzaklığı
+        let best = 0, bd = 1e9; for (let t = 0; t <= LA[3]; t += 0.05) { const q = nokta(A, LA, t); const dd = Math.hypot(q[0] - x, q[1] - y); if (dd < bd) { bd = dd; best = t; } }
+        if (d >= best) altin += 5; else emoji(ch, [x, y], 0.62);
+      }
+      okCiz(govde(A, LA, d, 2.2), RENK.sari);
+      if (p < 0.95) parmak(nokta(A, LA, d), 0.9);
+      ust(altin, 0, Math.round(p * 13), null);
+      if (altin) { c.fillStyle = RENK.vurgu || "#ffc84a"; c.font = "800 22px system-ui"; c.textAlign = "center"; c.fillText("+" + altin + " altın", G / 2, Y - 24); }
+    },
+  },
+  { // 4 KUYRUK
+    no: "4 / 6", baslik: "Kuyruktan da çek", aciklama: "Sıkıştın mı? Oku kuyruğundan tutup geri çekebilirsin.",
+    ciz(p) {
+      const B = [[1, 9], [1, 5], [4, 5]], LB = uzun(B);
+      temel([B]); kapiCiz([4.9, 5], RENK.sari, 0, false);
+      const dTam = LB[2]; const dBas = dTam - e(Math.min(1, p / 0.9)) * (dTam - 2.4); // baş geri çekilir
+      const g = govde(B, LB, dBas, 2.2); okCiz(g, RENK.sari);
+      if (p < 0.92) parmak(g[g.length - 1], 1);
+      c.fillStyle = RENK.soluk; c.font = "700 14px system-ui"; c.textAlign = "center";
+      c.fillText(p < 0.9 ? "Kuyruğu tut, geri çek" : "Yol yeniden açıldı", G / 2, Y - 26);
+      ust(0, 0, Math.round(p * 3), null);
+    },
+  },
+  { // 5 İPUCU
+    no: "5 / 6", baslik: "Takılırsan ipucu", aciklama: "💡 düğmesi çözüm yolunu gösterir. Yedi dil, tek dokunuş.",
+    ciz(p) {
+      temel([A]); kapiCiz(kapiA, RENK.sari, -Math.PI / 2, false);
+      okCiz(govde(A, LA, 2.2, 2.2), RENK.sari);
+      // beliren yol noktaları
+      const n = Math.floor(e(Math.min(1, p / 0.8)) * 26);
+      for (let i = 0; i < n; i++) { const q = nokta(A, LA, 2.2 + (LA[3] - 2.2) * (i / 25)); const [x, y] = px(q); c.fillStyle = "#ffffffd0"; c.beginPath(); c.arc(x, y, hucre * 0.12, 0, 7); c.fill(); }
+      // ipucu düğmesi
+      const bx = G / 2, by = Y - 46; c.fillStyle = p > 0.04 && p < 0.14 ? "#2c6a54" : "#1f4a3b"; c.beginPath(); c.roundRect(bx - 38, by - 24, 76, 48, 14); c.fill();
+      c.fillStyle = RENK.yazi; c.font = "700 20px system-ui"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("💡 3", bx, by);
+      if (p < 0.12) { c.globalAlpha = 1; c.font = hucre * 0.8 + "px system-ui"; c.fillText("👆", bx + 18, by + 22 + Math.sin(performance.now() / 260) * 3); }
+      ust(0, 0, 0, null);
+    },
+  },
+  { // 6 YILDIZ
+    no: "6 / 6", baslik: "3 yıldızı yakala", aciklama: "Aynı seviyeyi ne kadar az hamleyle bitirirsen o kadar çok yıldız.",
+    ciz(p) {
+      temel([A]); kapiCiz(kapiA, RENK.sari, -Math.PI / 2, p > 0.97);
+      const hamle = Math.round(p * 30); const yildiz = hamle <= 13 ? 3 : hamle <= 22 ? 2 : 1;
+      const d = 2.2 + e(Math.min(1, p / 0.95)) * (LA[3] - 2.2 + 0.2);
+      okCiz(govde(A, LA, d, 2.2), RENK.sari);
+      c.textAlign = "center"; c.textBaseline = "middle"; c.font = "46px system-ui";
+      for (let i = 0; i < 3; i++) { c.globalAlpha = i < yildiz ? 1 : 0.22; c.fillStyle = "#ffc84a"; c.fillText("★", G / 2 + (i - 1) * 54, Y - 52); }
+      c.globalAlpha = 1; ust(0, 0, hamle, "★ " + yildiz);
+    },
+  },
+
+  { // 7 ÜÇ RENK, SIRA ÖNEMLİ
+    no: "", baslik: "Sıra önemli!", aciklama: "Üç renk, üç kapı. Önce yolu kapatanı çıkar; yoksa herkes birbirini bekler.",
+    ciz(p) {
+      const Ys = [[1, 10], [1, 6], [5, 6], [5, 2]], Bs = [[3, 10], [3, 2]], Rs = [[6, 4], [0, 4]];
+      const LY = uzun(Ys), LB = uzun(Bs), LR = uzun(Rs);
+      temel([Ys, Bs, Rs]);
+      const ara = (a, b, t0, t1) => a + (b - a) * e(Math.min(1, Math.max(0, (p - t0) / (t1 - t0))));
+      const dY = p < 0.55 ? ara(2.2, 9, 0, 0.22) : ara(9, 14.6, 0.62, 0.95);
+      const dR = ara(2.2, 8.6, 0.3, 0.56);
+      const dB = ara(2.2, 10.4, 0.5, 0.78);
+      const kap = (P, L, d, boy) => d >= L[L.length - 1] + boy * 0.85;
+      kapiCiz([5, 1.1], RENK.sari, -Math.PI / 2, kap(Ys, LY, dY, 2.2));
+      kapiCiz([3, 1.1], RENK.mavi, -Math.PI / 2, kap(Bs, LB, dB, 2.2));
+      kapiCiz([-0.15, 4], "#ff6b6b", Math.PI, kap(Rs, LR, dR, 2.2));
+      if (!kap(Rs, LR, dR, 2.2)) okCiz(govde(Rs, LR, dR, 2.2), "#ff6b6b");
+      if (!kap(Bs, LB, dB, 2.2)) okCiz(govde(Bs, LB, dB, 2.2), RENK.mavi);
+      if (!kap(Ys, LY, dY, 2.2)) okCiz(govde(Ys, LY, dY, 2.2), RENK.sari);
+      c.fillStyle = RENK.soluk; c.font = "700 14px system-ui"; c.textAlign = "center"; c.textBaseline = "middle";
+      const not = p < 0.25 ? "Sarı ok ilerler..." : p < 0.3 ? "Kırmızı yolu kapatıyor!" : p < 0.56 ? "Önce kırmızı çıkar" : p < 0.8 ? "Sonra mavi" : "Şimdi sarı geçebilir";
+      c.fillText(not, G / 2, Y - 26);
+      ust(0, 0, Math.round(p * 17), null);
+    },
+  },
+  { // 8 SÜRELİ MOD
+    no: "", baslik: "Süreli mod", aciklama: "İstersen zamana karşı oyna: kalan süre, bitirdiğin hızda bonus altına döner.",
+    ciz(p) {
+      temel([A]); kapiCiz(kapiA, RENK.sari, -Math.PI / 2, p > 0.9);
+      const d = 2.2 + e(Math.min(1, p / 0.85)) * (LA[3] - 2.2 + 0.2);
+      okCiz(govde(A, LA, d, 2.2), RENK.sari);
+      // süre çubuğu
+      const kalan = Math.max(0, 1 - p * 0.62); const sn = Math.round(kalan * 42);
+      c.fillStyle = "#ffffff22"; c.beginPath(); c.roundRect(14, 62, G - 28, 8, 4); c.fill();
+      c.fillStyle = kalan > 0.4 ? "#7ddf9c" : "#ff6b6b"; c.beginPath(); c.roundRect(14, 62, (G - 28) * kalan, 8, 4); c.fill();
+      c.fillStyle = RENK.yazi; c.font = "800 18px system-ui"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("⏱ " + sn + " sn", G / 2, 86 - 2);
+      if (p > 0.88) { c.fillStyle = "#ffc84a"; c.font = "800 22px system-ui"; c.fillText("Süre bonusu +" + Math.round(kalan * 30) + " 🪙", G / 2, Y - 28); }
+      else { c.fillStyle = RENK.soluk; c.font = "700 14px system-ui"; c.fillText("Rahat modda süre yok, süreli modda yarış", G / 2, Y - 26); }
+      ust(0, 0, null, "⏱");
+    },
+  },
+  { // 9 GERİ AL
+    no: "", baslik: "Yanlış mı gittin?", aciklama: "Çıkmaz yola girdiysen ↩ ile geri al. Hamle sayın artmaz, yeniden dene.",
+    ciz(p) {
+      const Dolu = [[1, 9], [1, 6], [5, 6], [5, 2]];
+      const Cik = [[3, 6], [3, 3.4]];
+      temel([Dolu, Cik]); kapiCiz(kapiA, RENK.sari, -Math.PI / 2, p > 0.97);
+      // 0-0.3: doğru yol yerine çıkmaza gir; 0.3-0.45: geri al düğmesi; 0.45-0.95: doğru yoldan kapıya
+      const yanlis = [[1, 9], [1, 6], [3, 6], [3, 3.4]]; const LYn = uzun(yanlis);
+      let pts;
+      if (p < 0.3) { const d = 2.2 + e(p / 0.3) * (LYn[3] - 2.2); pts = govde(yanlis, LYn, d, 2.2); }
+      else if (p < 0.5) { const q = e((p - 0.3) / 0.2); const d = LYn[3] - q * (LYn[3] - 2.2); pts = govde(yanlis, LYn, d, 2.2); }
+      else { const d = 2.2 + e(Math.min(1, (p - 0.5) / 0.45)) * (LA[3] - 2.2 + 0.2); pts = govde(Dolu, uzun(Dolu), d, 2.2); }
+      okCiz(pts, RENK.sari);
+      // geri al düğmesi
+      const bx = G / 2, by = Y - 46; const bas = p > 0.3 && p < 0.38;
+      c.fillStyle = bas ? "#2c6a54" : "#1f4a3b"; c.beginPath(); c.roundRect(bx - 34, by - 24, 68, 48, 14); c.fill();
+      c.fillStyle = RENK.yazi; c.font = "700 24px system-ui"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("↩", bx, by);
+      if (p > 0.26 && p < 0.38) { c.font = hucre * 0.8 + "px system-ui"; c.fillText("👆", bx + 18, by + 22 + Math.sin(performance.now() / 260) * 3); }
+      c.fillStyle = RENK.soluk; c.font = "700 14px system-ui"; c.fillText(p < 0.3 ? "Çıkmaz yol!" : p < 0.5 ? "Geri al" : "Doğru yoldan", G / 2, Y - 90);
+      ust(0, 0, p < 0.3 ? Math.round(p * 20) : p < 0.5 ? Math.round(6 - (p - 0.3) * 30) : Math.round(6 + (p - 0.5) * 16), null);
+    },
+  },
+  { // KOMBO
+    no: "", baslik: "Kombo yap!", aciklama: "Okları kısa aralıkla art arda kapıya sok: övgü yazısı, yükselen ses ve ek altın.",
+    ciz(p) {
+      const Ks = [[1, 10], [1, 6], [5, 6], [5, 2]], Ms = [[3, 10], [3, 2]], Rs = [[6, 4], [0, 4]];
+      const LK = uzun(Ks), LM = uzun(Ms), LR = uzun(Rs);
+      temel([Ks, Ms, Rs]);
+      const ara = (a, b, t0, t1) => a + (b - a) * e(Math.min(1, Math.max(0, (p - t0) / (t1 - t0))));
+      const dR = ara(2.2, 8.6, 0.05, 0.3), dM = ara(2.2, 10.4, 0.3, 0.55), dK = ara(2.2, 14.6, 0.55, 0.85);
+      const kap = (L, d) => d >= L[L.length - 1] + 1.9;
+      kapiCiz([5, 1.1], RENK.sari, -Math.PI / 2, kap(LK, dK));
+      kapiCiz([3, 1.1], RENK.mavi, -Math.PI / 2, kap(LM, dM));
+      kapiCiz([-0.15, 4], "#ff6b6b", Math.PI, kap(LR, dR));
+      if (!kap(LR, dR)) okCiz(govde(Rs, LR, dR, 2.2), "#ff6b6b");
+      if (!kap(LM, dM)) okCiz(govde(Ms, LM, dM, 2.2), RENK.mavi);
+      if (!kap(LK, dK)) okCiz(govde(Ks, LK, dK, 2.2), RENK.sari);
+      const kombo = kap(LK, dK) ? 3 : kap(LM, dM) ? 2 : kap(LR, dR) ? 1 : 0;
+      const ovgu = ["", "", "Harika! ×2", "Muhteşem! ×3"];
+      if (kombo >= 2) { c.fillStyle = "#ffc84a"; c.font = "800 " + (26 + kombo * 4) + "px system-ui"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(ovgu[kombo], G / 2, Y - 62); }
+      c.fillStyle = RENK.soluk; c.font = "700 14px system-ui"; c.textAlign = "center"; c.textBaseline = "middle";
+      c.fillText(kombo >= 2 ? "+" + (kombo - 1) + " ek altın" : "Yavaşlama, arayı kısa tut", G / 2, Y - 26);
+      ust(kombo >= 2 ? (kombo - 1) * 5 : 0, 0, Math.round(p * 17), null);
+    },
+  },
+  { // KUSURSUZ SERİ
+    no: "", baslik: "Üç kusursuz, bir ipucu", aciklama: "Art arda üç seviyeyi 3 yıldızla bitirirsen bir 💡 ipucu hediye.",
+    ciz(p) {
+      c.fillStyle = RENK.zemin; c.fillRect(0, 0, G, Y);
+      const n = Math.min(3, Math.floor(p / 0.26)); // tamamlanan seviye sayısı
+      const kutuG = Math.min(96, (G - 60) / 3);
+      for (let i = 0; i < 3; i++) {
+        const x = G / 2 + (i - 1) * (kutuG + 14) - kutuG / 2, y = 120, tam = i < n;
+        c.fillStyle = tam ? "#1f4a3b" : "#16352a"; c.beginPath(); c.roundRect(x, y, kutuG, kutuG * 1.25, 16); c.fill();
+        c.strokeStyle = tam ? "#ffc84a" : "#ffffff22"; c.lineWidth = tam ? 3 : 2; c.beginPath(); c.roundRect(x, y, kutuG, kutuG * 1.25, 16); c.stroke();
+        c.fillStyle = RENK.yazi; c.textAlign = "center"; c.textBaseline = "middle"; c.font = "700 16px system-ui"; c.fillText("Seviye " + (i + 1), x + kutuG / 2, y + 22);
+        c.font = "26px system-ui"; c.fillStyle = tam ? "#ffc84a" : "#ffffff30"; c.fillText("★★★", x + kutuG / 2, y + kutuG * 0.82);
+      }
+      c.fillStyle = RENK.soluk; c.font = "700 15px system-ui"; c.textAlign = "center"; c.fillText("Kusursuz seri: " + n + " / 3", G / 2, 120 + kutuG * 1.25 + 40);
+      if (p > 0.8) {
+        const a = Math.min(1, (p - 0.8) / 0.12), s = 1 + (1 - a) * 0.4;
+        c.save(); c.translate(G / 2, Y - 120); c.scale(s, s); c.globalAlpha = a; c.font = "64px system-ui"; c.fillStyle = "#fff"; c.fillText("💡", 0, 0);
+        c.fillStyle = "#ffc84a"; c.font = "800 24px system-ui"; c.fillText("Kusursuz: +1 💡", 0, 56); c.restore();
+      }
+      ust(0, n * 3, null, "★ " + n * 3);
+    },
+  },
+  { // 10 DÜNYALAR
+    no: "", baslik: "20 dünya, 1000 seviye", aciklama: "Bahçeden kaleye her bölümde yeni renk, yeni yollar ve zorluk.",
+    ciz(p) {
+      c.fillStyle = RENK.zemin; c.fillRect(0, 0, G, Y);
+      const D = [["🌿", "Bahçe", "#16352a"], ["🌊", "Okyanus", "#0f2a4a"], ["🏜", "Çöl", "#4a3320"], ["🚀", "Uzay", "#1a1030"], ["🍬", "Şeker", "#4a1f3d"], ["🏰", "Kale", "#2a2a35"], ["❄", "Kar", "#1f3a52"], ["🌋", "Volkan", "#4a1f18"]];
+      const kol = 2, gen = (G - 36) / kol, yuk = (Y - 190) / 4;
+      const sira = Math.min(7, Math.floor(p * 8.4)); const seviye = Math.round(e(p) * 1000);
+      D.forEach((d, i) => {
+        const x = 12 + (i % kol) * (gen + 12), y = 70 + Math.floor(i / kol) * (yuk + 10);
+        const acik = i <= sira;
+        c.globalAlpha = acik ? 1 : 0.28; c.fillStyle = d[2]; c.beginPath(); c.roundRect(x, y, gen, yuk, 16); c.fill();
+        if (i === sira) { c.strokeStyle = "#ffc84a"; c.lineWidth = 3; c.beginPath(); c.roundRect(x, y, gen, yuk, 16); c.stroke(); }
+        c.fillStyle = RENK.yazi; c.textAlign = "center"; c.textBaseline = "middle"; c.font = "34px system-ui"; c.fillText(d[0], x + gen / 2, y + yuk * 0.42);
+        c.font = "700 15px system-ui"; c.fillText((i + 1) + ". " + d[1], x + gen / 2, y + yuk * 0.78); c.globalAlpha = 1;
+      });
+      c.fillStyle = "#ffc84a"; c.font = "800 34px system-ui"; c.textAlign = "center"; c.fillText("Seviye " + seviye, G / 2, Y - 62);
+      c.fillStyle = RENK.soluk; c.font = "700 14px system-ui"; c.fillText("ve 12 dünya daha...", G / 2, Y - 30);
+      ust(Math.round(p * 600), Math.round(p * 300), null, null);
+    },
+  },
+];
+
+// ---- sayfa mantığı
+const bolum = document.getElementById("adimlar");
+const metin = document.getElementById("metin"), no = document.getElementById("no"), baslik = document.getElementById("baslik"), aciklama = document.getElementById("aciklama");
+const noktalar = document.getElementById("noktalar");
+SAHNELER.forEach(() => noktalar.appendChild(document.createElement("i")));
+bolum.style.height = (SAHNELER.length * 125) + "vh";
+let aktif = -1, hedefP = 0, simdiP = 0, hedefAdim = 0;
+
+function boyut() {
+  const k = cv.getBoundingClientRect(); const dpr = Math.min(2, devicePixelRatio || 1);
+  cv.width = Math.round(k.width * dpr); cv.height = Math.round(k.height * dpr);
+  const olcek = (k.width / 360) * dpr;           // çizim 360 birim genişlikte tasarlandı; ekrana göre ölçeklenir
+  c.setTransform(olcek, 0, 0, olcek, 0, 0);
+  sahneKur(360, (k.height / k.width) * 360);
+}
+function kaydirmaHesapla() {
+  const k = bolum.getBoundingClientRect(); const toplam = k.height - innerHeight;
+  const p = toplam > 0 ? Math.min(0.9999, Math.max(0, -k.top / toplam)) : 0;
+  const x = p * SAHNELER.length; hedefAdim = Math.floor(x); hedefP = x - hedefAdim;
+}
+function adimYaz(i) {
+  if (i === aktif) return; aktif = i;
+  metin.classList.add("degis");
+  setTimeout(() => { const s = SAHNELER[i]; no.textContent = (i + 1) + " / " + SAHNELER.length; baslik.textContent = s.baslik; aciklama.textContent = s.aciklama; metin.classList.remove("degis"); }, 160);
+  [...noktalar.children].forEach((d, j) => d.classList.toggle("acik", j === i));
+}
+function dongu() {
+  { const k = cv.getBoundingClientRect(); const dpr = Math.min(2, devicePixelRatio || 1); if (k.width > 40 && Math.abs(k.width * dpr - cv.width) > 2) boyut(); }
+  // adım içinde ilerleme: bir adımın ilk %12'si ve son %12'si dinlenme
+  const ham = Math.min(1, Math.max(0, (hedefP - 0.12) / 0.76));
+  simdiP += (ham - simdiP) * 0.2; if (aktif !== hedefAdim) { simdiP = 0; }
+  adimYaz(hedefAdim);
+  SAHNELER[hedefAdim].ciz(simdiP);
+  requestAnimationFrame(dongu);
+}
+addEventListener("scroll", kaydirmaHesapla, { passive: true });
+addEventListener("resize", () => { boyut(); kaydirmaHesapla(); });
+boyut(); kaydirmaHesapla(); requestAnimationFrame(dongu);
+</script>
+</body>
+</html>
